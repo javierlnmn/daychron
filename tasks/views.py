@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views import View
@@ -50,6 +51,21 @@ class TaskView(LoginRequiredMixin, View):
 
         context = _task_context(request.user, view_date)
         return render(request, "tasks/partials/queue_response.html", context)
+
+    def patch(self, request, task_id):
+        task = Task.objects.filter(id=task_id, user=request.user).first()
+        if not task:
+            return HttpResponse(status=404)
+
+        if task.is_running:
+            delta = int((timezone.now() - task.last_started).total_seconds())
+            task.elapsed_seconds += delta
+            task.last_started = None
+        else:
+            task.last_started = timezone.now()
+
+        task.save(update_fields=["last_started", "elapsed_seconds"])
+        return HttpResponse(status=204)
 
     def delete(self, request, task_id):
         Task.objects.filter(id=task_id, user=request.user).delete()

@@ -1,0 +1,40 @@
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('timer', (elapsed = 0, running = false, url = '') => ({
+      elapsed,
+      running,
+      _interval: null,
+
+      get mm() {
+        return String(Math.floor(this.elapsed / 60)).padStart(2, '0');
+      },
+
+      get ss() {
+        return String(this.elapsed % 60).padStart(2, '0');
+      },
+
+      init() {
+        if (this.running) this._tick();
+      },
+
+      destroy() {
+        clearInterval(this._interval);
+      },
+
+      _tick() {
+        this._interval = setInterval(() => this.elapsed++, 1000);
+      },
+
+      toggle() {
+        this.running = !this.running;
+        if (this.running) {
+          this._tick();
+        } else {
+          clearInterval(this._interval);
+        }
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        fetch(url, { method: 'PATCH', headers: { 'X-CSRFToken': csrf } });
+      },
+    }));
+  });
+</script>

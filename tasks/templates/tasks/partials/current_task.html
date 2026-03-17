@@ -1,37 +1,36 @@
-{% load task_tags %}
+<div
+  x-data="timer({{ task.total_elapsed_seconds }}, {{ task.is_running|yesno:'true,false' }}, '{% url "tasks:task-detail" task.id %}')"
+  class="bg-gradient-to-b from-[#1e1e22] to-[#151517] rounded-2xl px-8 pt-10 pb-8 border border-neutral-600/25 shadow-xl shadow-black/30 relative"
+>
 
-<div class="bg-gradient-to-b from-[#1e1e22] to-[#151517] rounded-2xl px-8 pt-10 pb-8 border border-neutral-600/25 shadow-xl shadow-black/30 relative">
-
-  {% if task.is_running %}
-  <div class="absolute top-5 right-5">
+  <div x-show="running" x-cloak class="absolute top-5 right-5">
     <span class="relative flex h-2.5 w-2.5">
       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
       <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400"></span>
     </span>
   </div>
-  {% endif %}
 
   <div class="text-center">
-    <div class="font-mono text-[5.5rem] leading-none font-bold tracking-tight transition-colors
-                {% if task.is_running %}text-cyan-400{% else %}text-neutral-500{% endif %}">
-      {{ task.total_elapsed_seconds|timer_mm }}<span class="{% if task.is_running %}text-cyan-400/40{% else %}text-neutral-600{% endif %} mx-1">:</span>{{ task.total_elapsed_seconds|timer_ss }}
+    <div class="font-mono text-[5.5rem] leading-none font-bold tracking-tight transition-colors"
+         :class="running ? 'text-cyan-400' : 'text-neutral-500'">
+      <span x-text="mm"></span><span class="mx-1" :class="running ? 'text-cyan-400/40' : 'text-neutral-600'">:</span><span x-text="ss"></span>
     </div>
 
     <p class="text-base text-neutral-300 mt-5 font-medium">{{ task.name }}</p>
 
     <div class="flex items-center justify-center gap-3 mt-7">
-      <button class="w-12 h-12 rounded-xl border flex items-center justify-center transition-all
-                     {% if task.is_running %}bg-cyan-500/15 border-cyan-500/25 text-cyan-400 hover:bg-cyan-500/25{% else %}bg-neutral-800/50 border-neutral-700/30 text-neutral-400 hover:text-white hover:bg-neutral-700/60{% endif %}">
-        {% if task.is_running %}
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <button @click="toggle()"
+              class="w-12 h-12 rounded-xl border flex items-center justify-center transition-all"
+              :class="running
+                ? 'bg-cyan-500/15 border-cyan-500/25 text-cyan-400 hover:bg-cyan-500/25'
+                : 'bg-neutral-800/50 border-neutral-700/30 text-neutral-400 hover:text-white hover:bg-neutral-700/60'">
+        <svg x-show="running" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <rect x="6" y="4" width="4" height="16" rx="1"/>
           <rect x="14" y="4" width="4" height="16" rx="1"/>
         </svg>
-        {% else %}
-        <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+        <svg x-show="!running" class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
           <polygon points="5,3 19,12 5,21"/>
         </svg>
-        {% endif %}
       </button>
 
       <button class="w-12 h-12 rounded-xl bg-neutral-800/50 border border-neutral-700/30 flex items-center justify-center text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 hover:border-emerald-500/25 transition-all">

@@ -1,0 +1,7 @@
+{% if pending_tasks %}
+  {{ pending_tasks|length }} task{{ pending_tasks|length|pluralize }} remaining.
+{% elif completed_tasks %}
+  All tasks completed!
+{% else %}
+  No tasks queued.
+{% endif %}

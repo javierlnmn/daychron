@@ -1,9 +1,3 @@
-from django.urls import path
+app_name = "common"
 
-from . import views
-
-app_name = 'common'
-
-urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
-]
+urlpatterns = []

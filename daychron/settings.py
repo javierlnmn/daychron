@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Other apps
     "common",
     "accounts",
+    "tasks",
 ]
 
 MIDDLEWARE = [
@@ -182,7 +183,7 @@ JET_THEMES = [
 ]
 
 # Accounts redirect urls
-LOGIN_REDIRECT_URL = "common:index"
+LOGIN_REDIRECT_URL = "tasks:queue"
 LOGIN_URL = "accounts:login"
-LOGOUT_REDIRECT_URL = "common:index"
+LOGOUT_REDIRECT_URL = "accounts:login"
 LOGOUT_URL = "accounts:logout"

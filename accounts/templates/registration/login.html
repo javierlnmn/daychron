@@ -1,34 +1,76 @@
-{% extends 'common/_main.html' %}
-{% load static %}
+{% extends 'common/_main.html' %} {% load static %} {% block content %}
+<main class="flex-1 flex text-white">
+  <!-- Form side -->
+  <div
+    class="w-full lg:w-3/5 flex flex-col items-center justify-center px-6 py-12"
+  >
+    <div class="w-full max-w-[380px]">
+      <div class="text-center mb-10">
+        <img
+          src="{% static 'img/logo-rect_no-bg.png' %}"
+          alt="DayChron"
+          class="h-8 mx-auto mb-3"
+        />
+        <p class="text-sm text-neutral-500">Sign in to continue</p>
+      </div>
 
-{% block content %}
+      {% if form.errors %}
+      <div
+        class="mb-6 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center"
+      >
+        Invalid username or password.
+      </div>
+      {% endif %}
 
-<main class="flex-1 grid place-items-center">
+      <form method="POST" action="{% url 'accounts:login' %}" class="space-y-5">
+        {% csrf_token %}
+        <div>
+          <label
+            for="username"
+            class="block text-[13px] text-neutral-400 mb-1.5"
+            >Username</label
+          >
+          <input
+            required
+            type="text"
+            name="username"
+            id="username"
+            placeholder="Enter your username"
+            class="w-full h-11 bg-[#151517] border border-neutral-800 rounded-xl px-4 text-[15px] text-white placeholder-neutral-600 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+          />
+        </div>
+        <div>
+          <label
+            for="password"
+            class="block text-[13px] text-neutral-400 mb-1.5"
+            >Password</label
+          >
+          <input
+            required
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Enter your password"
+            class="w-full h-11 bg-[#151517] border border-neutral-800 rounded-xl px-4 text-[15px] text-white placeholder-neutral-600 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full h-11 bg-cyan-500 hover:bg-cyan-400 text-white font-medium rounded-xl transition-colors"
+        >
+          Sign in
+        </button>
+      </form>
+    </div>
+  </div>
 
-    <section class="w-11/12 max-w-[1200px] mx-auto py-6">
-        
-        <h1 class="text-3xl text-center">Login</h1>
-
-        <div class="max-w-[400px] mx-auto bg-gray-100/20 shadow-lg rounded-lg p-8 mt-6">
-            <form method="POST" action="{% url 'accounts:login' %}">
-                {% csrf_token %}
-                <div class="flex flex-col gap-8">
-                    <div class="group w-full">
-                        <label for="password" class="block w-full pb-2 text-sm font-medium transition-all duration-200 ease-in-out group-focus-within:text-blue-500">Username</label>
-                        <input required type="username" name="username" id="username" placeholder="Username" class="h-10 w-full border-[1px] border-gray-200 rounded-md bg-gray-50 px-4 font-thin outline-none drop-shadow-sm transition-all duration-200 ease-in-out focus:bg-white focus:ring-2 focus:ring-blue-500" />
-                    </div>
-
-                    <div class="group w-full">
-                        <label for="password" class="block w-full pb-2 text-sm font-medium transition-all duration-200 ease-in-out group-focus-within:text-blue-500">Password</label>
-                        <input required type="password" name="password" id="password" placeholder="Password" class="h-10 w-full border-[1px] border-gray-200 rounded-md bg-gray-50 px-4 font-thin outline-none drop-shadow-sm transition-all duration-200 ease-in-out focus:bg-white focus:ring-2 focus:ring-blue-500" />
-                    </div>
-
-                    <button type="submit" class="px-4 h-10 bg-blue-400 hover:bg-blue-500 transition-colors text-white rounded-md">Login</button>
-                </div>
-            </form>
-        </div>    
-    </section>
-
+  <!-- Image side -->
+  <div class="hidden lg:block w-2/5 relative">
+    <img
+      src="{% static 'img/login-hero.png' %}"
+      alt=""
+      class="absolute inset-0 w-full h-full object-cover"
+    />
+  </div>
 </main>
-    
 {% endblock %}

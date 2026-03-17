@@ -1,0 +1,59 @@
+from datetime import timedelta
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.utils import timezone
+from django.views import View
+from django.views.generic import TemplateView
+
+from common.utils import parse_date
+
+from .models import Task
+
+
+def _task_context(user, view_date):
+    tasks = Task.get_tasks_for_date(user, view_date)
+    pending = tasks.filter(completed=False)
+    completed = tasks.filter(completed=True)
+    return {
+        "pending_tasks": pending,
+        "completed_tasks": completed,
+        "current_task": pending.first(),
+        "view_date": view_date,
+        "today": timezone.localdate(),
+    }
+
+
+class QueueView(LoginRequiredMixin, TemplateView):
+    template_name = "tasks/queue.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        view_date = parse_date(self.request.GET.get("date"))
+        context.update(_task_context(self.request.user, view_date))
+        context["prev_date"] = view_date - timedelta(days=1)
+        context["next_date"] = view_date + timedelta(days=1)
+        return context
+
+
+class TaskView(LoginRequiredMixin, View):
+    def post(self, request):
+        name = request.POST.get("name", "").strip()
+        view_date = parse_date(request.POST.get("date"))
+
+        if name:
+            Task.objects.create(
+                user=request.user,
+                name=name,
+                date=view_date,
+            )
+
+        context = _task_context(request.user, view_date)
+        return render(request, "tasks/partials/queue_response.html", context)
+
+    def delete(self, request, task_id):
+        Task.objects.filter(id=task_id, user=request.user).delete()
+
+        view_date = parse_date(request.GET.get("date"))
+        context = _task_context(request.user, view_date)
+        return render(request, "tasks/partials/queue_response.html", context)

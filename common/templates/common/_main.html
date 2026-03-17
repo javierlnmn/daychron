@@ -1,15 +1,47 @@
-<!DOCTYPE html>
+{% load static tailwind_tags %}
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DayChron</title>
 
-{% include 'common/base/head.html' %}
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="{% static 'favicon/favicon.svg' %}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="{% static 'favicon/favicon-96x96.png' %}"
+    />
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{% static 'favicon/apple-touch-icon.png' %}"
+    />
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" />
 
-<body class="flex flex-col min-h-svh bg-[#0c0c0e]">
-    {% include 'common/base/header.html' %}
-    
-    {% block content %}
-    {% endblock %}
-
-    {% include 'common/base/footer.html' %}
-</body>
-
+    {% tailwind_css %}
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+    <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js"
+      defer
+    ></script>
+  </head>
+  <body
+    class="flex flex-col min-h-svh bg-[#0c0c0e]"
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+  >
+    {% block content %} {% endblock %}
+  </body>
 </html>

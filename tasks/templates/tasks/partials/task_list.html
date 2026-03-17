@@ -1,6 +1,6 @@
 {% if not pending_tasks and not completed_tasks %}
 
-<div class="flex flex-col items-center justify-center" style="padding-top: 30vh;">
+<div class="flex flex-col items-center justify-center flex-1">
   <p class="text-[1.65rem] font-semibold text-neutral-600">Do the next thing.</p>
   <p class="text-sm text-neutral-600 mt-2">Add a task below to begin.</p>
 </div>
@@ -8,34 +8,40 @@
 {% else %}
 
   {% if current_task %}
-    <div class="flex flex-col gap-2">
-      <h2 class="text-[11px] font-semibold tracking-[0.15em] text-neutral-500 uppercase">Right now</h2>
-      {% include 'tasks/partials/current_task.html' with task=current_task %}
-    </div>
+  <div class="flex flex-col gap-2 shrink-0">
+    <h2 class="text-[11px] font-semibold tracking-[0.15em] text-neutral-500 uppercase">Right now</h2>
+    {% include 'tasks/partials/current_task.html' with task=current_task %}
+  </div>
   {% endif %}
 
   {% with up_next=pending_tasks|slice:"1:" %}
-  {% if up_next %}
-    <div class="flex flex-col gap-2">
-      <h2 class="text-[11px] font-semibold tracking-[0.15em] text-neutral-500 uppercase">Up Next</h2>
+  {% if up_next or completed_tasks %}
+  <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+    <div class="min-h-[400px] overflow-y-auto rounded-2xl bg-[#131315] border border-neutral-700/30 shadow-lg shadow-black/20 px-5 pt-4 pb-3">
+      <h2 class="text-[11px] font-semibold tracking-[0.15em] text-neutral-500 uppercase mb-3">Up Next</h2>
+      {% if up_next %}
       <div class="flex flex-col gap-2 divide-y divide-neutral-800/60">
         {% for task in up_next %}
           {% include 'tasks/partials/up_next_task.html' %}
         {% endfor %}
       </div>
+      {% endif %}
     </div>
-  {% endif %}
-  {% endwith %}
 
-  {% if completed_tasks %}
-  <div class="flex flex-col gap-2">
-    <h2 class="text-[11px] font-semibold tracking-[0.15em] text-neutral-500 uppercase">Completed &middot; {{ completed_tasks|length }}</h2>
-    <div class="flex flex-col gap-2 divide-y divide-neutral-800/60">
-      {% for task in completed_tasks %}
-      {% include 'tasks/partials/completed_task.html' with task=task %}
-      {% endfor %}
+    <div class="min-h-[400px] overflow-y-auto rounded-2xl bg-[#131315] border border-neutral-700/30 shadow-lg shadow-black/20 px-5 pt-4 pb-3">
+      <h2 class="text-[11px] font-semibold tracking-[0.15em] text-neutral-500 uppercase mb-3">Completed &middot; {{ completed_tasks|length }}</h2>
+      {% if completed_tasks %}
+      <div class="flex flex-col gap-2 divide-y divide-neutral-800/60">
+        {% for task in completed_tasks %}
+          {% include 'tasks/partials/completed_task.html' with task=task %}
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
+
   </div>
   {% endif %}
+  {% endwith %}
 
 {% endif %}

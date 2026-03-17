@@ -1,74 +1,56 @@
-# Django App Template
+# Daychron
 
-This Django template includes:
+A focused task queue app built with Django. Add tasks to your daily queue, work through them one at a time with timer, and track your progress throughout the day.
 
-- JET admin interface
-- Python slugify package
-- Django Tailwind (_node.js and npm required_)
-- Python dotenv package
-- Basic templating structure
-- Basic account functionality (login and logout)
+## Setup
 
-## Installation
+### Prerequisites
 
-1. Install dependencies:
-   ```
-   poetry install
-   ```
-2. Install tailwind dependencies:
-   ```
-   poetry run python manage.py tailwind install
-   ```
-3. Migrate:
-   ```
-   poetry run python manage.py migrate
-   ```
+- Python 3.11+
+- [Poetry](https://python-poetry.org/)
+- Node.js and npm (for Tailwind CSS)
 
-## Dotenv
+### Environment
 
-In order to use the `dotenv` package, you will need to create a _.env_ file in the root of your project. You can change the location of the file by modifying this line in the `settings.py` file:
-
-```python
-# Load environment variables from .env
-load_dotenv(os.path.join(BASE_DIR, '.env'))
-```
-
-By default, the project settings gets `DEBUG` and `SECRET_KEY` values from _.env_ file.
-
-## Development Server
-
-To run the development server, just run these two commands in separate terminals:
+Copy the example env file and adjust as needed:
 
 ```
+cp .env.example .env
+```
+
+Then set these in your `.env` file:
+
+- `DEBUG=False`
+- `SECRET_KEY` — a random secret key
+- `ALLOWED_HOSTS` — comma-separated list of hosts
+- `CSRF_TRUSTED_ORIGINS` — comma-separated list of origins
+
+### Local
+
+```bash
+poetry install
+poetry run python manage.py tailwind install
+poetry run python manage.py migrate
+```
+
+Run these two commands in separate terminals:
+
+```bash
 poetry run python manage.py tailwind start
 ```
 
-and
-
-```
+```bash
 poetry run python manage.py runserver
 ```
 
-Alternatively, you can use Docker to run the development server:
+### Docker (dev)
 
+```bash
+docker compose -f docker-compose.dev.yaml up
 ```
-docker-compose -f docker/dev/docker-compose.dev.yaml up
-```
 
-### Running in Production
+### Docker (prod)
 
-To run the production server we recommend using Docker.
-You will need to set up the following environment variables:
-
-- `DEBUG`: Set to `False`
-- `SECRET_KEY`: A random secret key
-- `ALLOWED_HOSTS`: A comma-separated list of allowed hosts
-- `CSRF_TRUSTED_ORIGINS`: A comma-separated list of trusted origins
-
-You can set these variables in the _.env_ file.
-
-Then run the following command to start the production server:
-
-```
-docker-compose -f docker-compose.prod.yaml up
+```bash
+docker compose -f docker-compose.prod.yaml up
 ```
